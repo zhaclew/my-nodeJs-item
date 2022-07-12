@@ -1,0 +1,15 @@
+{
+  "name": "item",
+  "version": "1.0.0",
+  "description": "just a nodeJs project",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "ZhaClew",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "nodemon": "^2.0.19"
+  }
+}
