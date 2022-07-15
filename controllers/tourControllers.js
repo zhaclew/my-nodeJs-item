@@ -2,6 +2,16 @@ const fs = require("fs")
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours.json`))
 
+exports.checkId = (req, res, next, val) => {
+    if (val > tours.length) {
+        return res.status(404).json({
+            "status": "fail",
+            "message": "无效ID"
+        })
+    }
+    next()
+}
+
 exports.getTours = (req, res) => {
     res.status(200).json({
         "status": "success",
@@ -11,16 +21,8 @@ exports.getTours = (req, res) => {
     })
 }
 exports.getTour = (req, res) => {
-    let id = req.params.id * 1
-
-    if (id > tours.length) {
-        res.status(404).json({
-            "status": "fail",
-            "message": "无效ID"
-        })
-    }
     // filter 会找到所有匹配的， find 只会找到第一个
-    const tour = tours.find(el => el.id == id)
+    const tour = tours.find(el => el.id == req.params.id)
     res.status(200).json({
         "status": "success",
         "data": tour
@@ -40,13 +42,6 @@ exports.createTour = (req, res) => {
     })
 }
 exports.deleteTour = (req, res) => {
-    if (req.params.id * 1 > tours.length) {
-        res.status(404).json({
-            "status": "fail",
-            "message": "无效ID"
-        })
-        return
-    }
     res.status(204).json({
         "status": "success",
         "data": {
@@ -55,13 +50,6 @@ exports.deleteTour = (req, res) => {
     })
 }
 exports.addTour = (req, res) => {
-    if (req.params.id * 1 > tours.length) {
-        res.status(404).json({
-            "status": "fail",
-            "message": "无效ID"
-        })
-        return
-    }
     res.status(200).json({
         "status": "success",
         "data": {
