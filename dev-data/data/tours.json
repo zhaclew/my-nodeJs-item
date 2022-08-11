@@ -1,1 +1,52 @@
-[{"id":"1","name":"小明","hobby":"打游戏看动漫","about":"我只是一个普通的宅男罢了"},{"id":"2","name":"小蔡","hobby":"唱跳rap篮球","about":"大家好，我是练习时长两年半的偶像练习生"},{"id":"3","name":"小红","hobby":"搞黄色","about":"涩涩每一天，健康每一天"},{"id":4,"name":"测试 tours","item":"我只是一个测试项目"},{"id":5,"name":"测试 tours","item":"我只是一个测试项目2"},{"id":6,"name":"测试一下","item":"我只是一个测试项目3"}]
+[
+    {
+        "name": "三英战吕布",
+        "duration": 30,
+        "maxGroupSize": 3,
+        "rating": "",
+        "ratingAverage": "",
+        "ratingQuantity": "",
+        "difficulty": "地狱级",
+        "evaluate": null,
+        "price": 648,
+        "priceDiscount": 0.5,
+        "summary": "一次通关",
+        "details": " 选择你的队伍打败神吕布，只有一次机会，输了删档 ",
+        "imageCover": "miKu.jpg",
+        "images": [
+            "one.jpg",
+            "tow.jpg",
+            "three.jpg"
+        ],
+        "startTime": [
+            "2020-01-05",
+            "2020-02-15",
+            "2020-06-01"
+        ]
+    },
+    {
+        "name": "挥泪斩马谡",
+        "duration": 30,
+        "maxGroupSize": 3,
+        "rating": "",
+        "ratingAverage": "",
+        "ratingQuantity": "",
+        "difficulty": "地狱级",
+        "evaluate": null,
+        "price": 328,
+        "priceDiscount": 0.5,
+        "summary": "一次通关",
+        "details": " 选择你的队伍打败神吕布，只有一次机会，输了删档 ",
+        "imageCover": "red.jpg",
+        "images": [
+            "one.jpg",
+            "tow.jpg",
+            "three.jpg"
+        ],
+        "startTime": [
+            "2020-01-05",
+            "2020-02-15",
+            "2020-06-01"
+        ]
+    }
+]
