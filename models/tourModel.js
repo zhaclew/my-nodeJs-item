@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 // 限定模式类型
 const tourSchema = new mongoose.Schema({
     name: {
