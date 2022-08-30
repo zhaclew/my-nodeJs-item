@@ -12,6 +12,22 @@ const tokenCode = id => {
         expiresIn: process.env.JWT_EXPIRES_IN
     })
 }
+const createSendToken = (user, statusCode, res) => {
+    const token = tokenCode(user._id)
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+        httpOnly: true
+    }
+    if (process.env.NODE_ENV === "development") cookieOptions.secure = true
+    res.cookie('jwt', token, cookieOptions)
+    user.password = undefined
+    user.active = undefined
+    res.status(statusCode).json({
+        status: "success",
+        data: { user },
+        token
+    })
+}
 
 exports.signUp = catchAsync(async (req, res, next) => {
     // 这个功能自由度太高谁都能注册管理员
@@ -23,29 +39,17 @@ exports.signUp = catchAsync(async (req, res, next) => {
     //     password: req.body.password,
     //     passwordConfirm: req.body.passwordConfirm,
     //     phone: req.body.phone,
-    //     changePasswordAt: req.body.changePasswordAt,
-    //     role: req.body.role
     // })
-    const token = tokenCode(newUser._id)
-    res.status(201).json({
-        status: "success",
-        data: newUser,
-        token
-    })
+    createSendToken(newUser, 201, res)
 })
 
 exports.login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body
     const user = await User.findOne({ email }, "password")
-    console.log(user);
     if (!user || !(await user.comparePasswords(password, user.password))) {
         return next(new AppError('无效的邮箱或密码', 401))
     }
-    const token = tokenCode(user._id)
-    res.status(200).json({
-        status: "success",
-        token
-    })
+    createSendToken(user, 200, res)
 })
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -112,7 +116,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
         passwordResetExpires: { $gt: Date.now() }
     })
     // 2.校验加密的token, 成功通过则设置新密码
-    if(!user) next(new AppError('token过期，请重新获取邮箱验证码', 400))
+    if (!user) next(new AppError('token过期，请使用忘记密码来获取邮箱验证码', 400))
     user.password = req.body.password
     user.passwordConfirm = req.body.passwordConfirm
     user.passwordResetExpires = undefined
@@ -124,5 +128,24 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     res.status(200).json({
         status: 'success',
         token
+    })
+})
+
+// 更新修改密码
+exports.updatePassword = catchAsync(async (req, res, next) => {
+    // 默认登录状态下，找到该用户
+    const user = await User.findById(req.user._id).select('password')
+    // 校验提交的数据
+    if (req.body.passwordCurrent === null || !(await user.comparePasswords(req.body.passwordCurrent, user.password))) {
+        return next(new AppError('当前密码输入错误', 401))
+    }
+    user.password = req.body.password
+    user.passwordConfirm = req.body.passwordConfirm
+    // 保存数据
+    await user.save()
+    // 返回响应
+    res.status(200).json({
+        status: 'success',
+        message: '更新密码成功'
     })
 })

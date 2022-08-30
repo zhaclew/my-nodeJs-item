@@ -45,11 +45,30 @@ const userSchema = new mongoose.Schema({
             message: '确认密码填写出错'
         }
     },
+    passwordCurrent: {
+        type: String,
+        select: false,
+        validate: {
+            validator: function (el) {
+                return el === this.password
+            },
+            message: '当前密码填写错误'
+        }
+    },
+    active: {
+        type: Boolean,
+        default: true,
+        select: false
+    },
     changePasswordAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date
 })
-
+// 过滤删除了自己的用户， 设置成不活跃的那些
+userSchema.pre(/^find/, function (next) {
+    this.find({ active: { $ne: false } })
+    next()
+})
 // 保存前使用中间件加密密码
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next()
@@ -64,7 +83,7 @@ userSchema.methods.comparePasswords = async function (password, candidatePasswor
 // 检查用户是否更改密码
 userSchema.methods.changePassword = function (changeTime) {
     if (this.changePasswordAt) {
-        return parseInt(this.changePasswordAt.getTime() / 1000, 10) < changeTime
+        return parseInt(this.changePasswordAt.getTime() / 1000, 10) > changeTime
     }
     return false
 }

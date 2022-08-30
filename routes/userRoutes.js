@@ -8,6 +8,10 @@ router.post('/signup', authController.signUp)
 router.post('/login', authController.login)
 router.patch('/forgotPassword', authController.forgotPassword)
 router.patch('/resetPassword/:token?', authController.resetPassword)
+router.patch('/updatePassword', authController.protect, authController.updatePassword)
+
+router.patch('/updateMe', authController.protect, userControllers.updateMe)
+router.delete('/deleteMe', authController.protect, userControllers.deleteMe)
 
 router
     .route('/')
